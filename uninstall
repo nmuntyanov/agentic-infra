@@ -1,0 +1,12 @@
+#!/bin/bash
+
+set -e
+
+helm uninstall -n kagent kagent
+helm uninstall -n kagent kagent-crds
+helm uninstall -n agentgateway-system agentgateway-src
+helm uninstall -n agentgateway-system agentgateway
+helm uninstall -n agentgateway-system agentgateway-crds
+kubectl delete -f https://github.com/kubernetes-sigs/gateway-api/releases/download/v1.4.0/standard-install.yaml
+
+

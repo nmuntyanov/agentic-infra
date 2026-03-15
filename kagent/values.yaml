@@ -1,0 +1,11 @@
+kagent:
+  providers:
+    default: openAI
+    openAI:
+      provider: OpenAI
+      model: "gemini-2.5-flash-lite"
+      config:
+        baseUrl: "http://agentgateway-proxy.agentgateway-system.svc:80/v1"
+
+      apiKeySecretRef: kagent-gemini
+      apiKeySecretKey: GOOGLE_API_KEY

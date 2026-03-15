@@ -1,0 +1,35 @@
+#!/bin/bash
+
+set -e
+
+readonly SCRIPT_NAME="$(basename "$0")"
+readonly SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+readonly GEMINI_API_KEY="${GEMINI_API_KEY:-}"
+
+if [[ ! -n "$GEMINI_API_KEY" ]]; then
+  echo "Empty GEMINI_API_KEY env variable";
+  exit 1
+fi
+
+helm dependency update ./helm
+helm dependency update ./kagent
+
+kubectl apply --server-side -f https://github.com/kubernetes-sigs/gateway-api/releases/download/v1.4.0/standard-install.yaml
+helm upgrade -i --create-namespace \
+  --namespace agentgateway-system \
+  --version v2.2.1 agentgateway-crds oci://ghcr.io/kgateway-dev/charts/agentgateway-crds
+helm upgrade -i -n agentgateway-system agentgateway oci://ghcr.io/kgateway-dev/charts/agentgateway \
+--version v2.2.1
+helm upgrade -i --atomic -n agentgateway-system agentgateway-src \
+  --set secrets.gemini_api_key="${GEMINI_API_KEY}" \
+  ./helm
+
+helm install kagent-crds oci://ghcr.io/kagent-dev/kagent/helm/kagent-crds \
+    --namespace kagent \
+    --create-namespace
+
+helm upgrade -i --atomic -n kagent kagent \
+  ./kagent
+
+
+echo "RUN 'kubectl port-forward -n kagent svc/kagent-ui 8080:8080' and test http://localhost:8080"

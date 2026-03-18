@@ -13,6 +13,7 @@ fi
 
 helm dependency update ./helm
 helm dependency update ./kagent
+helm dependency update ./echo
 
 kubectl apply --server-side -f https://github.com/kubernetes-sigs/gateway-api/releases/download/v1.4.0/standard-install.yaml
 helm upgrade -i --create-namespace \
@@ -31,5 +32,7 @@ helm install kagent-crds oci://ghcr.io/kagent-dev/kagent/helm/kagent-crds \
 helm upgrade -i --atomic -n kagent kagent \
   ./kagent
 
+helm upgrade -i --atomic -n kagent echo-agent \
+  ./echo
 
 echo "RUN 'kubectl port-forward -n kagent svc/kagent-ui 8080:8080' and test http://localhost:8080"

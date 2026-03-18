@@ -1,0 +1,14 @@
+apiVersion: kagent.dev/v1alpha1
+kind: MCPServer
+metadata:
+  name: {{ .Values.mcp.name }}
+  namespace: '{{ .Release.Namespace }}'
+spec:
+  deployment:
+    image: "node:latest"
+    port: 3000
+    cmd: "npx"
+    args:
+      - -y
+      - '@muhtalipdede/echo-mcp-server'
+  transportType: "stdio"

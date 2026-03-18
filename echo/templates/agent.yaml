@@ -1,0 +1,21 @@
+apiVersion: kagent.dev/v1alpha2
+kind: Agent
+metadata:
+  name: {{ .Values.agent.name }}
+  namespace: '{{ .Release.Namespace }}'
+spec:
+  description: My Echo Agent
+  type: Declarative
+  declarative:
+    modelConfig: default-model-config
+    systemMessage: |-
+      You're an expert to repeat users input back to user
+    tools:
+      - type: McpServer
+        mcpServer:
+          apiGroup: kagent.dev
+          toolNames:
+            - echo_tool
+          name: '{{ .Values.mcp.name }}'
+          namespace: '{{ .Release.Namespace }}'
+          kind: MCPServer

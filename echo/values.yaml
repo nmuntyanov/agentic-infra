@@ -1,0 +1,4 @@
+mcp:
+  name: echo-mcp-server
+agent:
+  name: my-echo-agent

@@ -2,6 +2,7 @@
 
 set -e
 
+helm uninstall -n kagent echo-agent
 helm uninstall -n kagent kagent
 helm uninstall -n kagent kagent-crds
 helm uninstall -n agentgateway-system agentgateway-src
